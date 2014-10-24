@@ -27,6 +27,7 @@ public class UnityGCMNotificationManager {
 	// ID of notification
 	private static final int ID_NOTIFICATION = 1;
 	
+	private static String contentIntentActivityName;
 	/**
 	 * Show notification view in status bar
 	 * @param context
@@ -38,7 +39,17 @@ public class UnityGCMNotificationManager {
 		Log.v(TAG, "showNotification");
 		
 		// Intent 
-		Intent intent = new Intent(context, UnityPlayerProxyActivity.class);
+		Intent intent = null;
+		try 
+		{
+			Class<?> activityClass = Class.forName(contentIntentActivityName);
+			intent = new Intent(context, activityClass);
+			
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		PendingIntent contentIntent = PendingIntent.getActivity(context, REQUEST_CODE_UNITY_ACTIVITY, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		
 		//　Show notification in status bar
@@ -73,4 +84,8 @@ public class UnityGCMNotificationManager {
 		nm.cancelAll();
 	}
 	
+	public static void setContentIntentActivityName(String className)
+	{
+		contentIntentActivityName = className;
+	}
 }
